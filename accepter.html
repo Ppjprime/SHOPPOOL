@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopPool - Delivery Partner</title>
+    <link rel="stylesheet" href="accepter.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body>
+    <div class="accepter-dashboard">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="logo">
+                <h1>ShopPool</h1>
+                <span class="partner-badge">Delivery Partner</span>
+            </div>
+            <div class="header-actions">
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search deliveries...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <button class="dark-mode-toggle" id="darkModeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="user-profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="user-name">Pranjal</span>
+                    <div class="profile-dropdown">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <!-- Stats Overview -->
+            <section class="stats-overview">
+                <div class="stat-card">
+                    <div class="stat-icon active">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Active Deliveries</h3>
+                        <p class="stat-value" id="activeCount">3</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Completed Today</h3>
+                        <p class="stat-value" id="completedCount">7</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon earnings">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Today's Earnings</h3>
+                        <p class="stat-value" id="todayEarnings">₹1,250</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon rating">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Rating</h3>
+                        <p class="stat-value" id="partnerRating">4.8</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <div class="action-card" id="optimizeRouteBtn">
+                    <div class="action-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <div class="action-info">
+                        <h3>Optimize Route</h3>
+                        <p>Plan your delivery route efficiently</p>
+                    </div>
+                </div>
+                <div class="action-card" id="uploadDocBtn">
+                    <div class="action-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div class="action-info">
+                        <h3>Document Verification</h3>
+                        <p>Upload and verify your documents</p>
+                    </div>
+                </div>
+                <div class="action-card" id="earningsBtn">
+                    <div class="action-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="action-info">
+                        <h3>Earnings</h3>
+                        <p>View your earnings and payment history</p>
+                    </div>
+                </div>
+                <div class="action-card" id="supportBtn">
+                    <div class="action-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="action-info">
+                        <h3>Support</h3>
+                        <p>Get help with your deliveries</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Active Deliveries -->
+            <section class="deliveries-section">
+                <div class="section-header">
+                    <h2>Active Deliveries</h2>
+                    <div class="section-actions">
+                        <button id="viewAllActiveBtn" class="btn-secondary">
+                            <i class="fas fa-list"></i> View All
+                        </button>
+                    </div>
+                </div>
+                <div class="deliveries-grid" id="activeDeliveries">
+                    <!-- Sample Active Delivery 1 -->
+                    <div class="delivery-card">
+                        <div class="delivery-header">
+                            <div class="delivery-id">#1236</div>
+                            <div class="delivery-status status-active">In Progress</div>
+                        </div>
+                        <div class="delivery-details">
+                            <p><strong>Item:</strong> Laptop Backpack</p>
+                            <p><strong>Pickup:</strong> Lajpat Nagar Market</p>
+                            <p><strong>Delivery:</strong> NIT Jalandhar Boys Hostel</p>
+                            <p><strong>Budget:</strong> ₹2,000</p>
+                            <p><strong>Time:</strong> Tomorrow, Before 6 PM</p>
+                        </div>
+                        <div class="delivery-actions">
+                            <button class="btn-primary" onclick="updateStatus(1236)">
+                                <i class="fas fa-sync-alt"></i> Update Status
+                            </button>
+                            <button class="btn-secondary" onclick="viewDetails(1236)">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sample Active Delivery 2 -->
+                    <div class="delivery-card">
+                        <div class="delivery-header">
+                            <div class="delivery-id">#1238</div>
+                            <div class="delivery-status status-pending">Ready for Pickup</div>
+                        </div>
+                        <div class="delivery-details">
+                            <p><strong>Item:</strong> Gaming Mouse</p>
+                            <p><strong>Pickup:</strong> Electronics Hub</p>
+                            <p><strong>Delivery:</strong> NIT Jalandhar Campus</p>
+                            <p><strong>Budget:</strong> ₹3,500</p>
+                            <p><strong>Time:</strong> Today, Before 9 PM</p>
+                        </div>
+                        <div class="delivery-actions">
+                            <button class="btn-primary" onclick="updateStatus(1238)">
+                                <i class="fas fa-sync-alt"></i> Update Status
+                            </button>
+                            <button class="btn-secondary" onclick="viewDetails(1238)">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sample Active Delivery 3 -->
+                    <div class="delivery-card">
+                        <div class="delivery-header">
+                            <div class="delivery-id">#1239</div>
+                            <div class="delivery-status status-active">On the way</div>
+                        </div>
+                        <div class="delivery-details">
+                            <p><strong>Item:</strong> Smart Watch</p>
+                            <p><strong>Pickup:</strong> City Centre Mall</p>
+                            <p><strong>Delivery:</strong> NIT Jalandhar Campus</p>
+                            <p><strong>Budget:</strong> ₹15,000</p>
+                            <p><strong>ETA:</strong> 30 minutes</p>
+                        </div>
+                        <div class="delivery-actions">
+                            <button class="btn-primary" onclick="updateStatus(1239)">
+                                <i class="fas fa-sync-alt"></i> Update Status
+                            </button>
+                            <button class="btn-secondary" onclick="viewDetails(1239)">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Completed Deliveries -->
+            <section class="deliveries-section">
+                <div class="section-header">
+                    <h2>Completed Deliveries</h2>
+                    <div class="section-actions">
+                        <button id="viewAllCompletedBtn" class="btn-secondary">
+                            <i class="fas fa-list"></i> View All
+                        </button>
+                    </div>
+                </div>
+                <div class="deliveries-grid" id="completedDeliveries">
+                    <!-- Sample Completed Delivery 1 -->
+                    <div class="delivery-card">
+                        <div class="delivery-header">
+                            <div class="delivery-id">#1237</div>
+                            <div class="delivery-status status-completed">Completed</div>
+                        </div>
+                        <div class="delivery-details">
+                            <p><strong>Item:</strong> Wireless Mouse</p>
+                            <p><strong>Pickup:</strong> Model Town Market</p>
+                            <p><strong>Delivery:</strong> NIT Jalandhar Girls Hostel</p>
+                            <p><strong>Budget:</strong> ₹1,500</p>
+                            <p><strong>Completed:</strong> Today, 3:45 PM</p>
+                            <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐</p>
+                        </div>
+                        <div class="delivery-actions">
+                            <button class="btn-secondary" onclick="reviewRequest(1237)">
+                                <i class="fas fa-star"></i> Review
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sample Completed Delivery 2 -->
+                    <div class="delivery-card">
+                        <div class="delivery-header">
+                            <div class="delivery-id">#1240</div>
+                            <div class="delivery-status status-completed">Completed</div>
+                        </div>
+                        <div class="delivery-details">
+                            <p><strong>Item:</strong> Wireless Headphones</p>
+                            <p><strong>Pickup:</strong> Model Town Market</p>
+                            <p><strong>Delivery:</strong> NIT Jalandhar Hostel</p>
+                            <p><strong>Budget:</strong> ₹2,500</p>
+                            <p><strong>Completed:</strong> Today, 2:30 PM</p>
+                            <p><strong>Rating:</strong> ⭐⭐⭐⭐</p>
+                        </div>
+                        <div class="delivery-actions">
+                            <button class="btn-secondary" onclick="reviewRequest(1240)">
+                                <i class="fas fa-star"></i> Review
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sample Completed Delivery 3 -->
+                    <div class="delivery-card">
+                        <div class="delivery-header">
+                            <div class="delivery-id">#1241</div>
+                            <div class="delivery-status status-completed">Completed</div>
+                        </div>
+                        <div class="delivery-details">
+                            <p><strong>Item:</strong> USB-C Hub</p>
+                            <p><strong>Pickup:</strong> Electronics Hub</p>
+                            <p><strong>Delivery:</strong> NIT Jalandhar Campus</p>
+                            <p><strong>Budget:</strong> ₹1,800</p>
+                            <p><strong>Completed:</strong> Today, 1:15 PM</p>
+                            <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐</p>
+                        </div>
+                        <div class="delivery-actions">
+                            <button class="btn-secondary" onclick="reviewRequest(1241)">
+                                <i class="fas fa-star"></i> Review
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Document Verification Panel -->
+    <div id="docVerificationPanel" class="side-panel">
+        <div class="panel-header">
+            <h3>Document Verification</h3>
+            <button id="closeDocPanel" class="close-panel">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="panel-body">
+            <div class="doc-verification-tabs">
+                <button class="doc-tab active" data-tab="personal">Personal</button>
+                <button class="doc-tab" data-tab="vehicle">Vehicle</button>
+                <button class="doc-tab" data-tab="insurance">Insurance</button>
+            </div>
+            
+            <div class="doc-tab-content active" id="personal-tab">
+                <div class="upload-section">
+                    <h4>Personal Documents</h4>
+                    <div class="document-list">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <span class="document-name">ID Proof</span>
+                                <span class="document-status status-verified">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                                <span class="document-date">Verified on: 15 Mar 2023</span>
+                            </div>
+                            <div class="document-actions">
+                                <button class="btn-icon" title="View Document">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-secondary" onclick="uploadDocument('id')">
+                                    <i class="fas fa-upload"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <span class="document-name">Address Proof</span>
+                                <span class="document-status status-pending">
+                                    <i class="fas fa-clock"></i> Pending
+                                </span>
+                                <span class="document-date">Uploaded on: 10 Jun 2023</span>
+                            </div>
+                            <div class="document-actions">
+                                <button class="btn-icon" title="View Document">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-secondary" onclick="uploadDocument('address')">
+                                    <i class="fas fa-upload"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <span class="document-name">Profile Photo</span>
+                                <span class="document-status status-verified">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                                <span class="document-date">Verified on: 12 Apr 2023</span>
+                            </div>
+                            <div class="document-actions">
+                                <button class="btn-icon" title="View Document">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-secondary" onclick="uploadDocument('photo')">
+                                    <i class="fas fa-upload"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="doc-tab-content" id="vehicle-tab">
+                <div class="upload-section">
+                    <h4>Vehicle Documents</h4>
+                    <div class="document-list">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <span class="document-name">Vehicle Registration</span>
+                                <span class="document-status status-verified">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                                <span class="document-date">Verified on: 20 Feb 2023</span>
+                            </div>
+                            <div class="document-actions">
+                                <button class="btn-icon" title="View Document">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-secondary" onclick="uploadDocument('vehicle')">
+                                    <i class="fas fa-upload"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <span class="document-name">Driving License</span>
+                                <span class="document-status status-verified">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                                <span class="document-date">Verified on: 18 Jan 2023</span>
+                            </div>
+                            <div class="document-actions">
+                                <button class="btn-icon" title="View Document">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-secondary" onclick="uploadDocument('license')">
+                                    <i class="fas fa-upload"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <span class="document-name">Vehicle Insurance</span>
+                                <span class="document-status status-expired">
+                                    <i class="fas fa-exclamation-circle"></i> Expired
+                                </span>
+                                <span class="document-date">Expired on: 05 May 2023</span>
+                            </div>
+                            <div class="document-actions">
+                                <button class="btn-icon" title="View Document">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-secondary" onclick="uploadDocument('insurance')">
+                                    <i class="fas fa-upload"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="doc-tab-content" id="insurance-tab">
+                <div class="upload-section">
+                    <h4>Insurance Documents</h4>
+                    <div class="document-list">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <span class="document-name">Health Insurance</span>
+                                <span class="document-status status-verified">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                                <span class="document-date">Verified on: 22 Mar 2023</span>
+                            </div>
+                            <div class="document-actions">
+                                <button class="btn-icon" title="View Document">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-secondary" onclick="uploadDocument('health')">
+                                    <i class="fas fa-upload"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <span class="document-name">Accident Insurance</span>
+                                <span class="document-status status-pending">
+                                    <i class="fas fa-clock"></i> Pending
+                                </span>
+                                <span class="document-date">Uploaded on: 08 Jun 2023</span>
+                            </div>
+                            <div class="document-actions">
+                                <button class="btn-icon" title="View Document">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-secondary" onclick="uploadDocument('accident')">
+                                    <i class="fas fa-upload"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="upload-preview">
+                <div class="preview-header">
+                    <h4>Document Preview</h4>
+                    <div class="preview-actions">
+                        <button class="btn-icon" id="rotatePreview" title="Rotate">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button class="btn-icon" id="zoomInPreview" title="Zoom In">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button class="btn-icon" id="zoomOutPreview" title="Zoom Out">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="preview-container">
+                    <div id="uploadPreview">
+                        <div class="empty-preview">
+                            <i class="fas fa-file-upload"></i>
+                            <p>Select a document to preview</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="upload-actions">
+                    <button id="confirmUpload" class="btn-primary" style="display: none;">
+                        <i class="fas fa-check"></i> Confirm Upload
+                    </button>
+                    <button id="cancelUpload" class="btn-secondary" style="display: none;">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+            
+            <div class="verification-progress">
+                <h4>Verification Progress</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%;"></div>
+                </div>
+                <div class="progress-stats">
+                    <span>7 of 9 documents verified</span>
+                    <span>75% complete</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Route Optimization Panel -->
+    <div class="modal-overlay" id="routeOverlay"></div>
+    <div id="routeOptimizationPanel">
+        <div class="route-panel-header">
+            <h3>Route Optimization</h3>
+            <button id="closeRoutePanel" class="btn-icon" title="Close" onclick="document.getElementById('routeOptimizationPanel').classList.remove('active'); document.getElementById('routeOverlay').classList.remove('active');">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="route-panel-body">
+            <div class="top-section">
+                <div class="route-options">
+                    <h4>Optimization Options</h4>
+                    <div class="option-label">
+                        <input type="checkbox" id="avoidTraffic" checked>
+                        <span>Avoid Traffic</span>
+                    </div>
+                    <div class="option-label">
+                        <input type="checkbox" id="preferHighways" checked>
+                        <span>Prefer Highways</span>
+                    </div>
+                    <div class="option-label">
+                        <input type="checkbox" id="optimizeTime" checked>
+                        <span>Optimize for Time</span>
+                    </div>
+                    <div class="option-label">
+                        <input type="checkbox" id="groupByArea" checked>
+                        <span>Group by Area</span>
+                    </div>
+                    <div class="option-label">
+                        <input type="checkbox" id="balanceLoad" checked>
+                        <span>Balance Load</span>
+                    </div>
+                </div>
+                
+                <div class="map-container">
+                    <div id="deliveryMap"></div>
+                    <div class="map-controls">
+                        <button id="zoomIn" class="map-control-btn" title="Zoom In">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button id="zoomOut" class="map-control-btn" title="Zoom Out">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button id="resetMap" class="map-control-btn" title="Reset Map">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                        </button>
+                        <button id="toggleTrafficLayer" class="map-control-btn" title="Toggle Traffic Layer">
+                            <i class="fas fa-traffic-light"></i>
+                        </button>
+                        <button id="toggleSatelliteView" class="map-control-btn" title="Toggle Satellite View">
+                            <i class="fas fa-satellite"></i>
+                        </button>
+                    </div>
+                    <div class="live-location">
+                        <div class="location-header">
+                            <h4>Live Location</h4>
+                            <div class="location-controls">
+                                <button id="startTracking" class="btn-icon" title="Start Tracking">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button id="stopTracking" class="btn-icon" title="Stop Tracking" style="display: none;">
+                                    <i class="fas fa-stop"></i>
+                                </button>
+                                <button id="centerOnMe" class="btn-icon" title="Center on My Location">
+                                    <i class="fas fa-crosshairs"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="location-info">
+                            <div class="location-status">
+                                <span class="status-indicator"></span>
+                                <span class="status-text">Location tracking inactive</span>
+                            </div>
+                            <div class="location-coordinates">
+                                <span class="lat">Lat: --</span>
+                                <span class="lng">Lng: --</span>
+                            </div>
+                            <div class="location-accuracy">
+                                <span class="accuracy-value">Accuracy: --</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="route-info">
+                <div class="route-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-road"></i></div>
+                        <div class="stat-label">Total Distance</div>
+                        <div class="stat-value" id="totalDistance">0 km</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-label">Estimated Time</div>
+                        <div class="stat-value" id="estimatedTime">0 min</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="stat-label">Total Stops</div>
+                        <div class="stat-value" id="totalStops">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="stat-label">Estimated Earnings</div>
+                        <div class="stat-value" id="estimatedEarnings">₹0</div>
+                    </div>
+                </div>
+                <div class="route-controls">
+                    <button id="startRoute" class="route-control-btn" disabled>
+                        <i class="fas fa-play"></i> Start Route
+                    </button>
+                    <button id="reoptimizeRoute" class="route-control-btn" disabled>
+                        <i class="fas fa-sync-alt"></i> Reoptimize
+                    </button>
+                    <button id="saveRoute" class="route-control-btn" disabled>
+                        <i class="fas fa-save"></i> Save Route
+                    </button>
+                </div>
+                <div class="delivery-list-container">
+                    <h4>Delivery List</h4>
+                    <div id="deliveryList" class="delivery-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Route Optimization Modal -->
+    <div id="routeModal" class="modal">
+        <div class="modal-content route-modal">
+            <div class="modal-header">
+                <h3>Route Optimization</h3>
+                <button id="closeRouteModal" class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="route-options">
+                    <h4>Route Options</h4>
+                    <div class="option-group">
+                        <label class="option-label">
+                            <input type="checkbox" id="avoidTraffic" checked>
+                            <span class="option-text">Avoid Traffic</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="checkbox" id="preferHighways" checked>
+                            <span class="option-text">Prefer Highways</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="checkbox" id="optimizeTime" checked>
+                            <span class="option-text">Optimize Time</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="checkbox" id="groupByArea" checked>
+                            <span class="option-text">Group by Area</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="checkbox" id="balanceLoad" checked>
+                            <span class="option-text">Balance Load</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="map-container">
+                    <div id="deliveryMap"></div>
+                    <div class="route-info">
+                        <div class="route-stats">
+                            <div class="stat-item">
+                                <span class="stat-icon">📏</span>
+                                <span class="stat-label">Total Distance</span>
+                                <span id="totalDistance" class="stat-value">12.5 km</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">⏱️</span>
+                                <span class="stat-label">Estimated Time</span>
+                                <span id="estimatedTime" class="stat-value">45 min</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">📍</span>
+                                <span class="stat-label">Total Stops</span>
+                                <span id="totalStops" class="stat-value">3</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">💰</span>
+                                <span class="stat-label">Estimated Earnings</span>
+                                <span id="estimatedEarnings" class="stat-value">₹750</span>
+                            </div>
+                        </div>
+                        
+                        <div class="route-controls">
+                            <button id="toggleMapView" class="btn-secondary">
+                                <i class="fas fa-map"></i> Toggle Map View
+                            </button>
+                            <button id="toggleRouteInfo" class="btn-secondary">
+                                <i class="fas fa-info-circle"></i> Toggle Route Info
+                            </button>
+                            <button id="sortByDistance" class="btn-secondary">
+                                <i class="fas fa-sort-amount-down"></i> Sort by Distance
+                            </button>
+                            <button id="sortByTime" class="btn-secondary">
+                                <i class="fas fa-clock"></i> Sort by Time
+                            </button>
+                        </div>
+                        
+                        <div class="delivery-list-container">
+                            <h4>Optimized Delivery Route</h4>
+                            <div id="deliveryList" class="delivery-list">
+                                <!-- Delivery items will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="startRoute" class="btn-primary">
+                    <i class="fas fa-play"></i> Start Route
+                </button>
+                <button id="reoptimizeRoute" class="btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Reoptimize
+                </button>
+                <button id="saveRoute" class="btn-secondary">
+                    <i class="fas fa-save"></i> Save Route
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="accepter.js"></script>
+    <script src="dark-mode.js"></script>
+</body>
+</html> 

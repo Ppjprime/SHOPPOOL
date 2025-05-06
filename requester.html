@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopPool - Requester Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css">
+    <link rel="stylesheet" href="requester.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-truck"></i>
+                <span>ShopPool</span>
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span>Nikhil</span>
+                <button class="dark-mode-toggle" id="darkModeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Active Requests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">₹2,500</div>
+                <div class="stat-label">Total Spent</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">4.8</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">28</div>
+                <div class="stat-label">Completed Deliveries</div>
+            </div>
+        </div>
+
+        <main>
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-plus-circle"></i> New Request</h3>
+                    <form id="requestForm">
+                        <div class="form-group">
+                            <label for="item">Item Name</label>
+                            <input type="text" id="item" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" required>
+                                <option value="">Select a category</option>
+                                <option value="groceries">Groceries</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="food">Food & Beverages</option>
+                                <option value="books">Books & Stationery</option>
+                                <option value="health">Health & Beauty</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickup">📍 Pickup Location</label>
+                            <input type="text" id="pickup" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery">🏁 Delivery Location</label>
+                            <input type="text" id="delivery" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="deadline">Deadline</label>
+                            <input type="date" id="deadline" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Submit Request
+                        </button>
+                    </form>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-filter"></i> Filter Requests</h3>
+                    <div class="filter-options">
+                        <button class="btn btn-secondary active">All</button>
+                        <button class="btn btn-secondary">Pending</button>
+                        <button class="btn btn-secondary">Active</button>
+                        <button class="btn btn-secondary">Completed</button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-cog"></i> Settings</h3>
+                    <div class="settings-options">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-user-edit"></i> Edit Profile
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-bell"></i> Notifications
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="main-content">
+                <!-- Active Requests -->
+                <div class="request-card">
+                    <div class="request-header">
+                        <h3 class="request-title">Grocery Delivery</h3>
+                        <span class="request-status active">In Progress</span>
+                    </div>
+                    <div class="request-details">
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>📍 Pickup: Market Street</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-flag-checkered"></i>
+                            <span>🏁 Delivery: Home</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Deadline: 2:00 PM</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-user"></i>
+                            <span>Accepter: Sarah</span>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-primary" onclick="trackRequest(1)">
+                            <i class="fas fa-map-marked-alt"></i> Track Delivery
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-comment"></i> Chat
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pending Request -->
+                <div class="request-card">
+                    <div class="request-header">
+                        <h3 class="request-title">Package Pickup</h3>
+                        <span class="request-status pending">Pending</span>
+                    </div>
+                    <div class="request-details">
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>📍 Pickup: Post Office</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-flag-checkered"></i>
+                            <span>🏁 Delivery: Office</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Deadline: 5:00 PM</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-hourglass-half"></i>
+                            <span>Waiting for Accepter</span>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-trash"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Completed Request -->
+                <div class="request-card">
+                    <div class="request-header">
+                        <h3 class="request-title">Food Delivery</h3>
+                        <span class="request-status completed">Completed</span>
+                    </div>
+                    <div class="request-details">
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>�� Pickup: Restaurant</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-flag-checkered"></i>
+                            <span>🏁 Delivery: Home</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Completed: 1:30 PM</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-star"></i>
+                            <span>Rating: 5.0</span>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-star"></i> Rate
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Repeat
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Map Modal -->
+    <div id="mapModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Track Delivery</h3>
+                <button class="close" onclick="document.getElementById('mapModal').style.display='none'">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="map"></div>
+                <div id="deliveryMetrics"></div>
+                <div class="delivery-status">
+                    <div class="status-step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Order Placed</div>
+                        <div class="step-emoji">📝</div>
+                    </div>
+                    <div class="status-step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Picked Up</div>
+                        <div class="step-emoji">📦</div>
+                    </div>
+                    <div class="status-step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">On the Way</div>
+                        <div class="step-emoji">🚚</div>
+                    </div>
+                    <div class="status-step">
+                        <div class="step-number">4</div>
+                        <div class="step-text">Delivered</div>
+                        <div class="step-emoji">✅</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content payment-modal-content">
+            <div class="modal-header">
+                <h2>Complete Your Payment</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="payment-content">
+                <div class="payment-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Item</span>
+                            <span id="paymentItem">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery Fee</span>
+                            <span>₹50.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total Amount</span>
+                            <span id="paymentTotal">₹0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <h3>Select Payment Method</h3>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="upi" checked>
+                            <div class="payment-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <span>UPI</span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="card">
+                            <div class="payment-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <span>Card</span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="netbanking">
+                            <div class="payment-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <span>Net Banking</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="payment-details" id="upiDetails">
+                    <div class="qr-section">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=your.upi@id&pn=ShopPool&am=50&cu=INR" alt="UPI QR Code" class="qr-code">
+                        <p class="upi-id">your.upi@id</p>
+                        <button class="copy-btn" onclick="copyUpiId()">
+                            <i class="fas fa-copy"></i> Copy UPI ID
+                        </button>
+                    </div>
+                    <div class="payment-status">
+                        <div class="status-message">Scan QR code to pay</div>
+                        <div class="processing-animation" style="display: none;">
+                            <div class="spinner"></div>
+                            <div class="status-text">Processing payment...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-details" id="cardDetails" style="display: none;">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiryDate">Expiry Date</label>
+                            <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" placeholder="123" maxlength="3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardName">Name on Card</label>
+                        <input type="text" id="cardName" placeholder="John Doe">
+                    </div>
+                </div>
+
+                <div class="payment-details" id="netbankingDetails" style="display: none;">
+                    <div class="bank-list">
+                        <label class="bank-option">
+                            <input type="radio" name="bank" value="sbi">
+                            <img src="https://via.placeholder.com/40" alt="SBI">
+                            <span>State Bank of India</span>
+                        </label>
+                        <label class="bank-option">
+                            <input type="radio" name="bank" value="hdfc">
+                            <img src="https://via.placeholder.com/40" alt="HDFC">
+                            <span>HDFC Bank</span>
+                        </label>
+                        <label class="bank-option">
+                            <input type="radio" name="bank" value="icici">
+                            <img src="https://via.placeholder.com/40" alt="ICICI">
+                            <span>ICICI Bank</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="pay-now-btn" onclick="processPayment()">
+                    Pay Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="requester.js"></script>
+    <script src="dark-mode.js"></script>
+</body>
+</html> 
